@@ -4,7 +4,7 @@
 
 ## 项目概述
 
-这是一个完整的 Laravel 11 应用 Docker 镜像构建项目，为 AWS ECS Fargate 部署设计。
+这是一个 Laravel 11 应用 Docker 镜像构建项目，为 AWS ECS Fargate 部署设计。
 
 ## 功能特性
 
@@ -16,13 +16,55 @@
 6. **CloudWatch 集成** - 所有日志自动收集到 CloudWatch Logs
 7. **CI/CD 自动化** - GitHub Actions 自动构建、推送和部署，通过 AWS SNS 发送通知
 
+## 项目结构
+
+```
+laravel-deployment/
+├── app/                    # Laravel 应用代码
+├── bootstrap/              # Laravel 引导文件
+├── config/                 # Laravel 配置文件
+├── docker/                 # Docker 相关配置文件
+│   ├── entrypoint.sh      # 容器入口脚本（初始化、优化）
+│   ├── start.sh           # 启动脚本（启动 PHP-FPM 和 Nginx）
+│   ├── nginx.conf         # Nginx 站点配置
+│   ├── nginx-main.conf    # Nginx 主配置
+│   ├── php-fpm.conf       # PHP-FPM 配置
+│   └── php.ini            # PHP 配置
+├── public/                 # Web 根目录
+├── resources/              # 资源文件（视图等）
+├── routes/                 # 路由定义
+├── storage/                # 存储目录（日志、缓存、会话等）
+├── .dockerignore          # Docker 构建忽略文件
+├── .gitignore             # Git 忽略文件
+├── Dockerfile             # Docker 镜像构建文件
+├── composer.json          # PHP 依赖管理
+└── README.md              # 项目文档
+```
+
 ## 快速开始
 
 ### 构建镜像
 
 ```bash
-docker build -t laravel-11-php84:latest .
+docker build -t app/laravel-app .
 ```
+
+### 本地测试镜像
+
+```bash
+docker run -p 8080:80 \
+  -e DB_HOST=your-db-host.rds.amazonaws.com \
+  -e DB_DATABASE=postgres \
+  -e DB_USERNAME=postgres \
+  -e DB_PASSWORD=your-password \
+  -e DB_PORT=5432 \
+  -e DB_CONNECTION=pgsql \
+  app/laravel-app:latest
+```
+
+### 浏览器访问
+
+http://localhost:8080
 
 ## CI/CD 配置
 
@@ -71,9 +113,6 @@ docker build -t laravel-11-php84:latest .
 |--------|------|--------|
 | `DISPLAY_ENV_VAR` | 首页显示的环境变量 | `APP_NAME` |
 | `APP_NAME` | 应用名称 | `Laravel` |
-| `APP_ENV` | 应用环境 | `production` |
-| `APP_DEBUG` | 调试模式 | `false` |
-| `SESSION_DRIVER` | 会话驱动 | `file` |
 
 ## 日志说明
 
@@ -84,5 +123,3 @@ docker build -t laravel-11-php84:latest .
 - **PHP-FPM 错误日志** - 输出到 stderr
 - **Laravel 应用日志** - JSON 格式输出到 stderr
 - **Nginx 访问日志** - JSON 格式输出到 stderr（包含 X-Amzn-Trace-Id）
-
-所有日志通过 CloudWatch Logs Agent 自动收集，无需额外配置。
