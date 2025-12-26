@@ -48,6 +48,6 @@ RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/start.sh
 EXPOSE 80
 
 # 启动 PHP-FPM 和 Nginx
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["/usr/local/bin/start.sh"]
+ENTRYPOINT ["/bin/bash", "/usr/local/bin/entrypoint.sh"]
+CMD ["/bin/bash", "/usr/local/bin/start.sh"]
 

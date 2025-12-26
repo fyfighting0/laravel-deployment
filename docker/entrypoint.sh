@@ -14,6 +14,8 @@ fi
 # 安装 Composer 依赖（如果 vendor 目录不存在）
 if [ ! -d "vendor" ]; then
     echo "安装 Composer 依赖..."
+    # 解决 Git “dubious ownership” 问题，允许在 /var/www/html 使用当前用户的 Git
+    git config --global --add safe.directory /var/www/html 2>/dev/null || true
     composer install --no-dev --optimize-autoloader
 fi
 
@@ -92,11 +94,21 @@ fi
 # 清除旧的配置缓存（确保使用最新的 .env 配置）
 rm -f bootstrap/cache/config.php 2>/dev/null || true
 
+# 确保存储和缓存相关目录存在且权限正确
+mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs 2>/dev/null || true
+# 如果宿主机挂载覆盖了权限，这里强制归属 www-data（PHP-FPM 默认用户）
+chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
+chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+
 # 运行 Laravel 优化命令
 php artisan config:cache || true
 php artisan route:cache || true
-# 只有在 views 目录存在时才缓存视图
+
+# 只有在 views 目录存在时才缓存视图，并确保编译目录存在
 if [ -d "resources/views" ]; then
+    # Laravel 的视图编译目录（通常是 storage/framework/views）
+    COMPILED_VIEWS_DIR=$(php -r "echo config('view.compiled') ?: 'storage/framework/views';" 2>/dev/null || echo 'storage/framework/views')
+    mkdir -p "$COMPILED_VIEWS_DIR" 2>/dev/null || true
     php artisan view:cache || true
 fi
 
