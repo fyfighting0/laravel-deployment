@@ -8,6 +8,7 @@
 .env.production
 .env.local
 .env.*.local
+!.env.example
 
 # Laravel
 /public/hot
@@ -37,8 +38,8 @@ npm-debug.log
 yarn-error.log
 
 # Docker
-.dockerignore
 docker-compose.override.yml
+!.dockerignore
 
 # Laravel specific
 Homestead.json

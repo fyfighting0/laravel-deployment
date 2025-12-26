@@ -1,0 +1,64 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+.fleet
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies (will be installed in container)
+node_modules
+vendor
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Laravel
+/storage/logs/*
+!/storage/logs/.gitignore
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+/public/hot
+/public/storage
+.phpunit.result.cache
+
+# Build artifacts
+*.log
+npm-debug.log
+yarn-error.log
+
+# CI/CD
+.github
+
+# Documentation
+README.md
+*.md
+
+# Docker
+docker-compose.yml
+docker-compose.override.yml
+Dockerfile.dev
+
+# Tests
+tests
+.phpunit.cache
+
+# Other
+Homestead.json
+Homestead.yaml
+auth.json
+
