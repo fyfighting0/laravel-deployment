@@ -31,8 +31,8 @@ docker build -t laravel-11-php84:latest .
 工作流文件位于 `.github/workflows/deploy.yml`，实现自动构建和部署。
 
 **触发条件**：
-- 推送到 `main` 分支
-- 合并 PR 到 `main` 分支
+- 推送到 `master` 分支
+- 合并 PR 到 `master` 分支
 
 **部署流程**：
 1. 构建 Docker 镜像（`latest` 标签）
